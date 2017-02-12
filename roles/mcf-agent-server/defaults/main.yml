@@ -11,7 +11,7 @@ postgres_version: 9.5
 postgresql_admin_user: postgres
 postgresql_admin_password: postgres
 postgresql_db_port: 5432
-service_name: mcf-infodna
+service_name: mcf-contentdiv
 number_of_agents: 2
 postgresql_pg_hba_default:
   - { type: local, database: all, user: '{{ postgresql_admin_user }}', address: '', method: '{{ postgresql_default_auth_method }}', comment: '' }
