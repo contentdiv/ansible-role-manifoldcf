@@ -1,7 +1,6 @@
 # ansible-role-manifoldcf
-Role to install Apache ManifoldCF (Coming soon..)
 
-Ansible role which installs and configures PostgreSQL, extensions, databases and users.
+Role to install Apache ManifoldCF with Postgres
 
 
 #### Installation
@@ -69,4 +68,4 @@ Licensed under the Apache License. See the [LICENSE](./LICENSE) file for details
 
 #### Feedback, bug-reports, requests, ...
 
-Are [welcome](https://github.com/contentdiv/ansible-role-manifoldcf)!
+Are [welcome](https://github.com/contentdiv/ansible-role-manifoldcf/issues)!
