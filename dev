@@ -1,14 +1,14 @@
 [mcf-agent-servers]
-192.168.33.55
+192.168.33.66
 
 [mcf-admin-ui-servers]
-192.168.33.55
+192.168.33.66
 
 [mcf-rest-servers]
-192.168.33.55
+192.168.33.66
 
 [mcf-db-servers]
-192.168.33.55
+192.168.33.66
 
 [mcf-servers-all:children]
 mcf-agent-servers

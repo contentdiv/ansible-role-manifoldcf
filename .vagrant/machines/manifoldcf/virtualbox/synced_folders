@@ -1,0 +1,1 @@
+{"rsync":{"/vagrant":{"type":"rsync","guestpath":"/vagrant","hostpath":"/Users/vinodhboopalan/Code/cdi-lab-ansible/ansible-role-manifoldcf","disabled":false,"owner":"vagrant","group":"vagrant"}}}
