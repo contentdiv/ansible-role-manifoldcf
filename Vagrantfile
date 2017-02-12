@@ -14,6 +14,13 @@ Vagrant.configure(2) do |config|
      vb.memory = "4096"
   end
 
+  config.vm.provision 'ansible' do |ansible|
+     ansible.playbook = 'mcf-agents.yml'
+     ansible.sudo = true
+     ansible.inventory_path = 'dev'
+     ansible.host_key_checking = false
+  end
+
   #x11
   config.ssh.forward_x11 = true
 
