@@ -1,0 +1,9 @@
+---
+# file: mcf-agents.yml
+- hosts: mcf-agent-servers
+ # strategy: debug
+  gather_facts: yes
+  sudo: yes
+  roles:
+    - common
+    - mcf-agent-server

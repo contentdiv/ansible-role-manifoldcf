@@ -1,0 +1,68 @@
+---
+# file: manifoldcf/roles/common/tasks/main.yml
+
+- name: Create Installation OS Group on the server
+  group:
+    name: "{{ install_os_group }}"
+    state: present
+
+- name: Create Installation OS User Account on the server
+  user:
+    name: "{{ install_owner_name }}"
+    state: present
+    group: "{{ install_os_group }}"
+    home: /home/{{ install_owner_name }}
+    shell: /bin/bash
+    password: "{{ install_owner_password }}" #TBD needs to be encrypted
+    append: yes
+
+- name: Allow {{ install_os_group }} group to have passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%{{ install_os_group }}'
+    line: '%{{ install_os_group }} ALL=(ALL) NOPASSWD: ALL'
+
+- name: Create directory location to be used for installation
+  file:
+    path: "{{ mcf_install_dir }}"
+    state: directory
+    owner: "{{ install_owner_name }}"
+    group: "{{ install_os_group }}"
+    mode: 0755
+    recurse: yes # e_g. /opt/manifoldcf/
+
+- name: Create a temp directory to be used to stage  Softwares
+  file:
+    path: "{{ install_software_tempdir }}"
+    state: directory
+    owner: "{{ install_owner_name }}"
+    group: "{{ install_os_group }}"
+    mode: 0775
+    recurse: yes # group=itadmin
+
+- name: Download Apache ManifoldCF
+  get_url:
+    url: "{{ mcf_apache_download_base_url }}{{ mcf_version }}/apache-manifoldcf-{{ mcf_version }}-bin.tar.gz"
+    dest: "{{ install_software_tempdir }}/apache-manifoldcf-{{ mcf_version }}-bin.tar.gz"
+
+    
+- name: Extract archive
+  become: true
+  become_user: "{{ install_owner_name }}"
+  unarchive:
+    src:  "{{ install_software_tempdir }}/apache-manifoldcf-{{ mcf_version }}-bin.tar.gz"
+    dest: "{{ mcf_install_dir }}"
+    owner: "{{ install_owner_name }}"
+    remote_src: yes
+    mode: u+rwx
+    copy: no
+
+- name: Download JCIFS for Windows Share connector
+  get_url:
+    url: "https://jcifs.samba.org/src/jcifs-{{ jcifs_version }}.jar"
+    dest: "{{ mcf_install_dir }}apache-manifoldcf-{{ mcf_version }}/connector-lib-proprietary/"
+    owner: "{{ install_owner_name }}"
+    mode: u+rwx
+
+

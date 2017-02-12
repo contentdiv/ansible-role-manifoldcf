@@ -1,0 +1,23 @@
+---
+# file: roles/ia-server/defaults/main.yml
+
+install_owner_name: itadmin
+install_owner_password: matrix14
+install_os_group: itadmin
+mcf_install_dir: /opt/manifoldcf/
+mcf_base_dir: /opt/manifoldcf/
+installation_database: postgres
+postgres_version: 9.5
+postgresql_admin_user: postgres
+postgresql_admin_password: postgres
+postgresql_db_port: 5432
+service_name: mcf-infodna
+number_of_agents: 2
+postgresql_pg_hba_default:
+  - { type: local, database: all, user: '{{ postgresql_admin_user }}', address: '', method: '{{ postgresql_default_auth_method }}', comment: '' }
+  - { type: local, database: all, user: all, address: '',             method: '{{ postgresql_default_auth_method }}', comment: '"local" is for Unix domain socket connections only' }
+  - { type: host,  database: all, user: all, address: '127.0.0.1/32', method: '{{ postgresql_default_auth_method }}', comment: 'IPv4 local connections:' }
+  - { type: host,  database: all, user: all, address: '{{ mcf_db_server }}', method: '{{ postgresql_default_auth_method }}', comment: 'IPv4 local connections:' }
+  - { type: host,  database: all, user: all, address: '::1/128',      method: '{{ postgresql_default_auth_method }}', comment: 'IPv6 local connections:' }
+  - { type: host,  database: all, user: all, address: '0.0.0.0/0',    method: 'md5', comment: 'Password required' }
+

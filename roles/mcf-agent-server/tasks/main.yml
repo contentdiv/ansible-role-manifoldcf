@@ -1,0 +1,84 @@
+---
+# file: manifoldcf/roles/mcf-agent-server/tasks/main.yml
+
+- name: Create a single process example dir to <service_name>
+  become: true
+  become_user: "{{ install_owner_name }}"
+  file:
+    path: "{{ mcf_install_dir }}apache-manifoldcf-{{ mcf_version }}/{{ service_name }}-sp"
+    state: directory
+
+
+- name: Copy single process example dir to {{ service_name }}
+  become: true
+  become_user: "{{ install_owner_name }}"
+  copy: remote_src=true src="{{ item }}" dest="{{ mcf_install_dir }}apache-manifoldcf-{{ mcf_version }}/{{ service_name }}-sp/" mode=u+rwx
+  with_items:
+      - "{{ mcf_install_dir }}apache-manifoldcf-{{ mcf_version }}/example/combined-options.env.unix"
+      - "{{ mcf_install_dir }}apache-manifoldcf-{{ mcf_version }}/example/logging.ini"
+      - "{{ mcf_install_dir }}apache-manifoldcf-{{ mcf_version }}/example/properties.xml"
+      - "{{ mcf_install_dir }}apache-manifoldcf-{{ mcf_version }}/example/start.bat"
+      - "{{ mcf_install_dir }}apache-manifoldcf-{{ mcf_version }}/example/start-combined.sh"
+      - "{{ mcf_install_dir }}apache-manifoldcf-{{ mcf_version }}/example/start-options.env.unix"
+      - "{{ mcf_install_dir }}apache-manifoldcf-{{ mcf_version }}/example/start.sh"
+      - "{{ mcf_install_dir }}apache-manifoldcf-{{ mcf_version }}/example/stop-combined.bat"
+      - "{{ mcf_install_dir }}apache-manifoldcf-{{ mcf_version }}/example/stop.sh"
+      - "{{ mcf_install_dir }}apache-manifoldcf-{{ mcf_version }}/example/combined-options.env.win"
+      - "{{ mcf_install_dir }}apache-manifoldcf-{{ mcf_version }}/example/jetty.xml"
+      - "{{ mcf_install_dir }}apache-manifoldcf-{{ mcf_version }}/example/setjavaoption.bat"
+      - "{{ mcf_install_dir }}apache-manifoldcf-{{ mcf_version }}/example/start-combined.bat"
+      - "{{ mcf_install_dir }}apache-manifoldcf-{{ mcf_version }}/example/start.jar"
+      - "{{ mcf_install_dir }}apache-manifoldcf-{{ mcf_version }}/example/start-options.env.win"
+      - "{{ mcf_install_dir }}apache-manifoldcf-{{ mcf_version }}/example/stop.bat"
+      - "{{ mcf_install_dir }}apache-manifoldcf-{{ mcf_version }}/example/stop-combined.sh"
+
+
+- name: Update connectors.xml file based on vars
+  lineinfile:
+    dest: "{{ mcf_install_dir }}/apache-manifoldcf-{{ mcf_version }}/connectors.xml"
+    regexp: "{{ item.regexp}}"
+    insertbefore: '<repositoryconnector name="HDFS" class="org.apache.manifoldcf.crawler.connectors.hdfs.HDFSRepositoryConnector"/>'
+    line: "{{ item.line }}"
+    state: present
+  with_items:
+    - { regexp: '<repositoryconnector name="Windows shares" class="org.apache.manifoldcf.crawler.connectors.sharedrive.SharedDriveConnector"/>', line: '<repositoryconnector name="Windows shares" class="org.apache.manifoldcf.crawler.connectors.sharedrive.SharedDriveConnector"/>' }
+
+
+- name: Update Properties.xml file based on vars
+  when: installation_database == "postgres"
+  lineinfile:
+    dest: "{{ mcf_install_dir }}/apache-manifoldcf-{{ mcf_version }}/{{ service_name }}-sp/properties.xml"
+    regexp: "{{ item.regexp}}"
+    insertbefore: "</configuration>"
+    line: "{{ item.line }}"
+
+    state: present
+  with_items:
+    - { regexp: '<property name="org.apache.manifoldcf.databaseimplementationclass" value="org.apache.manifoldcf.core.database.DBInterfacePostgreSQL"/>', line: '<property name="org.apache.manifoldcf.databaseimplementationclass" value="org.apache.manifoldcf.core.database.DBInterfacePostgreSQL"/>' }
+    - { regexp: '<property name="org.apache.manifoldcf.dbsuperusername" value="{{ postgresql_admin_user }}"/>', line: '<property name="org.apache.manifoldcf.dbsuperusername" value="{{ postgresql_admin_user }}"/>' }
+    - { regexp: '<property name="org.apache.manifoldcf.dbsuperuserpassword" value="{{ postgresql_admin_password }}"/>', line: '<property name="org.apache.manifoldcf.dbsuperuserpassword" value="{{ postgresql_admin_password }}"/>' }
+    - { regexp: '<property name="org.apache.manifoldcf.postgresql.hostname" value="{{ mcf_db_server }}"/>', line: '<property name="org.apache.manifoldcf.postgresql.hostname" value="{{ mcf_db_server }}"/>' }
+    - { regexp: '<property name="org.apache.manifoldcf.postgresql.port" value="{{ postgresql_db_port }}"/>', line: '<property name="org.apache.manifoldcf.postgresql.port" value="{{ postgresql_db_port }}"/>' }
+
+- name: Remove the HSQL lines
+  when: installation_database == "postgres"
+  lineinfile:
+    dest: "{{ mcf_install_dir }}/apache-manifoldcf-{{ mcf_version }}/{{ service_name }}-sp/properties.xml"
+    regexp: "{{ item.regexp}}"
+    line: "{{ item.line }}"
+    state: absent
+  with_items:
+    - { regexp: '<property name="org.apache.manifoldcf.databaseimplementationclass" value="org.apache.manifoldcf.core.database.DBInterfaceHSQLDB"/>', line: '<property name="org.apache.manifoldcf.databaseimplementationclass" value="org.apache.manifoldcf.core.database.DBInterfaceHSQLDB"/>' }
+    - { regexp: '<property name="org.apache.manifoldcf.hsqldbdatabasepath" value="."/>', line: '<property name="org.apache.manifoldcf.hsqldbdatabasepath" value="."/>' }
+
+
+- name: Start MCF Service (Combined) Single Process
+  become: true
+  become_user: "{{ install_owner_name }}"
+  shell: nohup {{ mcf_install_dir }}/apache-manifoldcf-{{ mcf_version }}/{{ service_name }}-sp/start-combined.sh &
+
+
+#- name: Copy Connectors.xml file based on vars
+
+#- name: Update Properties.xml file based on vars
+

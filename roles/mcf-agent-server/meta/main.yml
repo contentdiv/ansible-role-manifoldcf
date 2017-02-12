@@ -1,0 +1,5 @@
+---
+# file: roles/mcf-agent-server/meta/main.yml
+
+dependencies:
+   - { role: ANXS.postgresql, when: installation_database == 'postgres' }

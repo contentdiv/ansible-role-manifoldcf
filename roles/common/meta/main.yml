@@ -1,0 +1,5 @@
+---
+# file: roles/common/meta/main.yml
+
+dependencies:
+   - { role: williamyeh.oracle-java, java_version: 8, java_subversion: 102, java_set_javahome: true, java_install_jce: true }

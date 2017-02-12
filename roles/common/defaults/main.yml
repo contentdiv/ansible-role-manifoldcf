@@ -1,0 +1,12 @@
+---
+# file: roles/common/defaults/main.yml
+install_owner_name: itadmin
+install_owner_password: matrix14
+install_os_group: itadmin
+install_software_tempdir: /home/itadmin/software
+mcf_install_dir: /opt/manifoldcf/
+mcf_apache_download_base_url: http://archive.apache.org/dist/manifoldcf/apache-manifoldcf-
+mcf_version: 2.6
+installation_mode: single
+installation_database: postgres
+jcifs_version: 1.3.18
