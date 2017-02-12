@@ -7,11 +7,6 @@ Role to install Apache ManifoldCF with Postgres
 
 This has been tested on Ansible 2.1.2.0.
 
-To install:
-
-```
-ansible-galaxy install ANXS.postgresql
-```
 
 #### Dependencies
 
