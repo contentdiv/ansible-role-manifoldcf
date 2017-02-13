@@ -7,7 +7,7 @@ install_os_group: itadmin
 mcf_install_dir: /opt/manifoldcf/
 mcf_base_dir: /opt/manifoldcf/
 installation_database: postgres
-postgres_version: 9.5
+postgresql_version: 9.5
 postgresql_admin_user: postgres
 postgresql_admin_password: postgres
 postgresql_db_port: 5432
