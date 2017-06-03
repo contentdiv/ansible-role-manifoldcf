@@ -1,7 +1,7 @@
 ---
 # file: roles/common/defaults/main.yml
 install_owner_name: itadmin
-install_owner_password: matrix14
+install_owner_password: ******
 install_os_group: itadmin
 install_software_tempdir: /home/itadmin/software
 mcf_install_dir: /opt/manifoldcf/
